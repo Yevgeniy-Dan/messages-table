@@ -8,7 +8,7 @@ export const selectMessage =
 
 export const selectMessageData = createSelector(
   selectMessage,
-  (state: IMessageState) => state.data
+  (state: IMessageState) => state.messageTable
 );
 
 export const selectSendMessageLoading = createSelector(

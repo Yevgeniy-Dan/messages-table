@@ -6,6 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
+  loadMessages,
+  loadMessagesFailure,
+  loadMessagesSuccess,
   sendMessage,
   sendMessageFailure,
   sendMessageSuccess,
@@ -16,6 +19,18 @@ import { IMessage } from 'src/app/interfaces/message.interface';
 
 @Injectable()
 export class MessageEffects {
+  loadMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadMessages),
+      mergeMap(() => {
+        return this.dataService.getMessages().pipe(
+          map((messages) => loadMessagesSuccess({ data: messages })),
+          catchError((error) => of(loadMessagesFailure({ error })))
+        );
+      })
+    )
+  );
+
   sendMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendMessage),

@@ -1,6 +1,9 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { IMessageState, initialState } from './message.state';
 import {
+  loadMessages,
+  loadMessagesFailure,
+  loadMessagesSuccess,
   sendMessage,
   sendMessageFailure,
   sendMessageSuccess,
@@ -18,6 +21,37 @@ const messageReducer = createReducer(
     const errorMessage: string =
       (error && error.error && error.error.error) || 'Something went wrong';
     return { ...state, loading: false, error: errorMessage };
+  }),
+  on(loadMessages, (state) => {
+    return {
+      ...state,
+      messageTable: {
+        ...state.messageTable,
+        loading: true,
+      },
+    };
+  }),
+  on(loadMessagesSuccess, (state, { data }) => {
+    return {
+      ...state,
+      messageTable: {
+        data,
+        loading: false,
+        error: null,
+      },
+    };
+  }),
+  on(loadMessagesFailure, (state, { error }) => {
+    const errorMessage: string =
+      (error && error.error && error.error.error) || 'Something went wrong';
+    return {
+      ...state,
+      messageTable: {
+        ...state.messageTable,
+        loading: false,
+        error: errorMessage,
+      },
+    };
   })
 );
 

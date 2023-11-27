@@ -1,3 +1,7 @@
+.center {
+  text-align: center;
+}
+
 .message-button {
   margin: 10px;
 }
@@ -19,4 +23,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.table-container {
+  margin: 0 auto;
+  padding: 10px 100px;
+}
+
+.table-container table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table-container th,
+.table-container td {
+  max-width: 200px;
+  width: 50%;
+  word-wrap: break-word;
 }

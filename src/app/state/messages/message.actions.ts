@@ -16,3 +16,15 @@ export const sendMessageFailure = createAction(
   '[Message] Send Message Failure',
   props<{ error: any }>()
 );
+
+export const loadMessages = createAction('[Message] Load Message Table');
+
+export const loadMessagesSuccess = createAction(
+  '[Message] Load Message Table Complete',
+  props<{ data: IMessage[] }>()
+);
+
+export const loadMessagesFailure = createAction(
+  '[Message] Load Message Table Failure',
+  props<{ error: any }>()
+);

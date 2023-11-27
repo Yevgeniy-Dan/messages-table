@@ -1,13 +1,17 @@
-import { IMessage } from 'src/app/interfaces/message.interface';
+import { IMessage, IMessageTable } from 'src/app/interfaces/message.interface';
 
 export interface IMessageState {
-  data: IMessage[];
+  messageTable: IMessageTable;
   loading: boolean;
   error: string | null;
 }
 
 export const initialState: IMessageState = {
-  data: [],
+  messageTable: {
+    data: [],
+    loading: true,
+    error: null,
+  },
   error: null,
   loading: false,
 };
