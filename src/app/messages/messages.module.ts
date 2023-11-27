@@ -13,6 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MessageFormDialogComponent } from './message-form-dialog/message-form-dialog.component';
 
+import { DataService } from '../services/data.service';
+
 @NgModule({
   declarations: [MessagesComponent, MessageFormDialogComponent],
   imports: [
@@ -26,5 +28,6 @@ import { MessageFormDialogComponent } from './message-form-dialog/message-form-d
     MatFormFieldModule,
     MessagesRoutingModule,
   ],
+  providers: [DataService],
 })
 export class MessagesModule {}
