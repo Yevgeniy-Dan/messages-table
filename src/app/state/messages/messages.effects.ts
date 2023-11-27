@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { catchError, map, mergeMap, of, tap } from 'rxjs';
+
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   sendMessage,
@@ -16,11 +19,13 @@ export class MessageEffects {
   sendMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendMessage),
-      mergeMap((action: { message: IMessage }) => {
+      mergeMap((action: { message: IMessage; dialogId: string }) => {
         return this.dataService
           .createMessage(action.message.name, action.message.message)
           .pipe(
             map((docRef) => {
+              //TODO: should I pass `dialogId` further along the props?
+              this.matDialog.getDialogById(action.dialogId)?.close();
               return sendMessageSuccess({ messageId: docRef.id });
             }),
             catchError((error) => of(sendMessageFailure({ error })))
@@ -29,5 +34,47 @@ export class MessageEffects {
     )
   );
 
-  constructor(private actions$: Actions, private dataService: DataService) {}
+  sendMessageFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(sendMessageFailure),
+        tap((action: { error: any }) => {
+          const errorMessage: string =
+            (action.error && action.error.error && action.error.error.error) ||
+            'Something went wrong';
+          this.handleError(errorMessage);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  sendMessageSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(sendMessageSuccess),
+        tap(() => {
+          this.handleSuccess();
+        })
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private dataService: DataService,
+    private matDialog: MatDialog,
+    private _snackBar: MatSnackBar
+  ) {}
+
+  handleError(errorMessage: string): void {
+    this._snackBar.open(errorMessage, 'Close', {
+      duration: 5000,
+    });
+  }
+
+  handleSuccess(): void {
+    this._snackBar.open('Your message has been successfully added!', 'Close', {
+      duration: 5000,
+    });
+  }
 }

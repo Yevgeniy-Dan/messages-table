@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { IMessage } from 'src/app/interfaces/message.interface';
-import { DataService } from 'src/app/services/data.service';
 import { IAppState } from 'src/app/state/app.state';
 import { sendMessage } from 'src/app/state/messages';
 
@@ -21,9 +20,8 @@ export class MessageFormDialogComponent {
   });
 
   constructor(
-    dialogRef: MatDialogRef<MessageFormDialogComponent>,
+    private dialogRef: MatDialogRef<MessageFormDialogComponent>,
     private formBuilder: FormBuilder,
-    private dataService: DataService,
     private store: Store<IAppState>
   ) {}
 
@@ -32,7 +30,9 @@ export class MessageFormDialogComponent {
       name: this.name,
       message: this.message,
     };
-    this.store.dispatch(sendMessage({ message: messageRecord }));
+    this.store.dispatch(
+      sendMessage({ message: messageRecord, dialogId: this.dialogRef.id })
+    );
   }
 
   get name(): string {

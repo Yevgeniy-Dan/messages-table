@@ -12,6 +12,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MessageFormDialogComponent } from './message-form-dialog/message-form-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { DataService } from '../services/data.service';
 
@@ -26,6 +27,7 @@ import { DataService } from '../services/data.service';
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     MessagesRoutingModule,
   ],
   providers: [DataService],

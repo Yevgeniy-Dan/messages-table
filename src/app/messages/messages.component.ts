@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MessageFormDialogComponent } from './message-form-dialog/message-form-dialog.component';
+import { Store } from '@ngrx/store';
+import { IAppState } from '../state/app.state';
+import { selectSendMessageLoading } from '../state/messages';
 
 @Component({
   selector: 'app-messages',
@@ -9,7 +13,11 @@ import { MessageFormDialogComponent } from './message-form-dialog/message-form-d
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent {
-  constructor(public dialog: MatDialog) {}
+  sendMessageLoading$: Observable<boolean> = this.store.select(
+    selectSendMessageLoading
+  );
+
+  constructor(public dialog: MatDialog, private store: Store<IAppState>) {}
 
   openFormDialog(): void {
     const dialogRef = this.dialog.open(MessageFormDialogComponent, {

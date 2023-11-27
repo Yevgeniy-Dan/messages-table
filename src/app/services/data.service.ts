@@ -1,8 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   DocumentData,
   DocumentReference,
   Firestore,
+  FirestoreError,
   addDoc,
   collection,
 } from '@angular/fire/firestore';
@@ -22,6 +23,8 @@ export class DataService {
       addDoc(collection(this.firestore, 'messages'), {
         name,
         message,
+      }).catch((error: FirestoreError) => {
+        throw error.message;
       })
     );
   }

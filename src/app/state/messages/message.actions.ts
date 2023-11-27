@@ -4,7 +4,7 @@ import { IMessage } from 'src/app/interfaces/message.interface';
 
 export const sendMessage = createAction(
   '[Message] Send Message',
-  props<{ message: IMessage }>()
+  props<{ message: IMessage; dialogId: string }>()
 );
 
 export const sendMessageSuccess = createAction(

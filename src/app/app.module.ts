@@ -15,6 +15,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { appReducers } from './state/app.state';
 import { MessageEffects } from './state/messages/messages.effects';
@@ -26,8 +28,10 @@ import { DataService } from './services/data.service';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatDialogModule,
     MatToolbarModule,
     MatButtonModule,
+    MatSnackBarModule,
     StoreModule.forRoot(appReducers, {}),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
