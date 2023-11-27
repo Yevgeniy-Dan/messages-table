@@ -24,6 +24,7 @@ import { DataService } from './services/data.service';
 
 @NgModule({
   declarations: [AppComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -41,4 +42,5 @@ import { DataService } from './services/data.service';
   providers: [DataService],
   bootstrap: [AppComponent],
 })
+export class AppModule {}
 export class AppModule {}
