@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, map, mergeMap, of, tap, take, switchMap } from 'rxjs';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,11 +22,16 @@ export class MessageEffects {
   loadMessages$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadMessages),
-      mergeMap(() => {
-        return this.dataService.getMessages().pipe(
-          map((messages) => loadMessagesSuccess({ data: messages })),
-          catchError((error) => of(loadMessagesFailure({ error })))
-        );
+      switchMap((action: { pageSize: number; pageIndex: number }) => {
+        return this.dataService
+          .getMessages(action.pageSize, action.pageIndex)
+          .pipe(
+            take(2),
+            map((response) => {
+              return loadMessagesSuccess({ data: response });
+            }),
+            catchError((error) => of(loadMessagesFailure({ error })))
+          );
       })
     )
   );
@@ -35,16 +40,14 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(sendMessage),
       mergeMap((action: { message: IMessage; dialogId: string }) => {
-        return this.dataService
-          .createMessage(action.message.name, action.message.message)
-          .pipe(
-            map((docRef) => {
-              //TODO: should I pass `dialogId` further along the props?
-              this.matDialog.getDialogById(action.dialogId)?.close();
-              return sendMessageSuccess({ messageId: docRef.id });
-            }),
-            catchError((error) => of(sendMessageFailure({ error })))
-          );
+        return this.dataService.createMessage(action.message).pipe(
+          map((docRef) => {
+            //TODO: should I pass `dialogId` further along the props?
+            this.matDialog.getDialogById(action.dialogId)?.close();
+            return sendMessageSuccess({ messageId: docRef.id });
+          }),
+          catchError((error) => of(sendMessageFailure({ error })))
+        );
       })
     )
   );

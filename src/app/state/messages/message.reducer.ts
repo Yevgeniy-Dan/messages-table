@@ -15,7 +15,11 @@ const messageReducer = createReducer(
     return { ...state, loading: true };
   }),
   on(sendMessageSuccess, (state, { messageId }) => {
-    return { ...state, loading: false, error: null };
+    return {
+      ...state,
+      loading: false,
+      error: null,
+    };
   }),
   on(sendMessageFailure, (state, { error }) => {
     const errorMessage: string =
@@ -32,10 +36,12 @@ const messageReducer = createReducer(
     };
   }),
   on(loadMessagesSuccess, (state, { data }) => {
+    console.log(data);
     return {
       ...state,
       messageTable: {
-        data,
+        data: data.messages,
+        totalCount: data.totalCount,
         loading: false,
         error: null,
       },

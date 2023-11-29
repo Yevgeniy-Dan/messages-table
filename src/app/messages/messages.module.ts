@@ -17,11 +17,18 @@ import { MessageFormDialogComponent } from './message-form-dialog/message-form-d
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { DataService } from '../services/data.service';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { SkeletonTableComponent } from './skeleton-table/skeleton-table.component';
 
 @NgModule({
-  declarations: [MessagesComponent, MessageFormDialogComponent],
+  declarations: [
+    MessagesComponent,
+    MessageFormDialogComponent,
+    SkeletonTableComponent,
+  ],
   imports: [
     CommonModule,
+    NgxSkeletonLoaderModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,

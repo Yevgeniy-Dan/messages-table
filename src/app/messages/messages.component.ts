@@ -1,14 +1,25 @@
 import {
   AfterViewInit,
   Component,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { Observable, Subscription, map } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  first,
+  map,
+  of,
+  shareReplay,
+  take,
+  tap,
+} from 'rxjs';
 
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MessageFormDialogComponent } from './message-form-dialog/message-form-dialog.component';
 import { Store } from '@ngrx/store';
@@ -19,7 +30,6 @@ import {
   selectSendMessageLoading,
 } from '../state/messages';
 import { IMessage, IMessageTable } from '../interfaces/message.interface';
-import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-messages',
@@ -27,7 +37,9 @@ import { Firestore } from '@angular/fire/firestore';
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
-  displayedColumns: string[] = ['name', 'message'];
+  displayedColumns = ['name', 'message', 'createdAt'];
+
+  initialLoadInProgress = true;
 
   dataSource = new MatTableDataSource<IMessage>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -37,20 +49,27 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
   );
   messages$: Observable<IMessageTable> = this.store
     .select(selectMessageData)
-    .pipe(map((messageData) => messageData));
+    .pipe(
+      map((messageData) => messageData),
+      shareReplay()
+    );
+
+  pageIndex: number = 0;
+  pageSize: number = 10;
+
   private messagesSubscription!: Subscription;
 
-  constructor(
-    public dialog: MatDialog,
-    private store: Store<IAppState>,
-    private firestore: Firestore
-  ) {}
+  constructor(public dialog: MatDialog, private store: Store<IAppState>) {}
 
   ngOnInit(): void {
     this.loadMessageTable();
     this.messagesSubscription = this.messages$.subscribe(
       (data: IMessageTable) => {
         this.dataSource.data = data.data;
+        this.dataSource.paginator = this.paginator;
+        if (this.initialLoadInProgress) {
+          this.initialLoadInProgress = false;
+        }
       }
     );
   }
@@ -73,6 +92,20 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
    * Load messages table from firestore and ngrx store
    */
   private loadMessageTable(): void {
-    this.store.dispatch(loadMessages());
+    this.store.dispatch(
+      loadMessages({ pageIndex: this.pageIndex, pageSize: this.pageSize })
+    );
+  }
+
+  onChangePage(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+
+    this.store.dispatch(
+      loadMessages({
+        pageSize: event.pageSize,
+        pageIndex: event.pageIndex,
+      })
+    );
   }
 }

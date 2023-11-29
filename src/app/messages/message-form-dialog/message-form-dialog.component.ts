@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Timestamp } from '@angular/fire/firestore';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -29,6 +30,7 @@ export class MessageFormDialogComponent {
     const messageRecord: IMessage = {
       name: this.name,
       message: this.message,
+      createdAt: Timestamp.fromDate(new Date()),
     };
     this.store.dispatch(
       sendMessage({ message: messageRecord, dialogId: this.dialogRef.id })

@@ -1,6 +1,9 @@
 import { DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { createAction, props } from '@ngrx/store';
-import { IMessage } from 'src/app/interfaces/message.interface';
+import {
+  IMessage,
+  IMessageResponse,
+} from 'src/app/interfaces/message.interface';
 
 export const sendMessage = createAction(
   '[Message] Send Message',
@@ -17,11 +20,14 @@ export const sendMessageFailure = createAction(
   props<{ error: any }>()
 );
 
-export const loadMessages = createAction('[Message] Load Message Table');
+export const loadMessages = createAction(
+  '[Message] Load Message Table',
+  props<{ pageSize: number; pageIndex: number }>()
+);
 
 export const loadMessagesSuccess = createAction(
   '[Message] Load Message Table Complete',
-  props<{ data: IMessage[] }>()
+  props<{ data: IMessageResponse }>()
 );
 
 export const loadMessagesFailure = createAction(

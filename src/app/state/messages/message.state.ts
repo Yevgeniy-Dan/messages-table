@@ -1,4 +1,4 @@
-import { IMessage, IMessageTable } from 'src/app/interfaces/message.interface';
+import { IMessageTable } from 'src/app/interfaces/message.interface';
 
 export interface IMessageState {
   messageTable: IMessageTable;
@@ -10,6 +10,7 @@ export const initialState: IMessageState = {
   messageTable: {
     data: [],
     loading: true,
+    totalCount: 0,
     error: null,
   },
   error: null,
