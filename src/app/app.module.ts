@@ -10,7 +10,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
-import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,7 +23,6 @@ import { DataService } from './services/data.service';
 
 @NgModule({
   declarations: [AppComponent],
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -34,7 +32,16 @@ import { DataService } from './services/data.service';
     MatButtonModule,
     MatSnackBarModule,
     StoreModule.forRoot(appReducers, {}),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirebaseApp(() =>
+      initializeApp({
+        apiKey: process.env['NG_APP_FIREBASE_API_KEY'],
+        authDomain: process.env['NG_APP_FIREBASE_AUTH_DOMAIN'],
+        projectId: process.env['NG_APP_FIREBASE_PROJECT_ID'],
+        storageBucket: process.env['NG_APP_FIREBASE_STORAGE_BUCKET'],
+        messagingSenderId: process.env['NG_APP_FIREBASE_MESSAGING_SENDER_ID'],
+        appId: process.env['NG_APP_FIREBASE_APP_ID'],
+      })
+    ),
     provideFirestore(() => getFirestore()),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     EffectsModule.forRoot([MessageEffects]),
@@ -42,5 +49,4 @@ import { DataService } from './services/data.service';
   providers: [DataService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
 export class AppModule {}
