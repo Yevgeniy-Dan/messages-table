@@ -14,7 +14,7 @@ import {
   sendMessageSuccess,
 } from './message.actions';
 
-import { DataService } from 'src/app/services/data.service';
+import { MessagesService } from 'src/app/services/messages.service';
 import { IMessage } from 'src/app/interfaces/message.interface';
 
 @Injectable()
@@ -23,14 +23,25 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(loadMessages),
       switchMap((action: { pageSize: number; pageIndex: number }) => {
-        return this.dataService
-          .getMessages(action.pageSize, action.pageIndex)
-          .pipe(
-            map((response) => {
-              return loadMessagesSuccess({ data: response });
-            }),
-            catchError((error) => of(loadMessagesFailure({ error })))
-          );
+        return this.messagesService.getMessages().pipe(
+          map((response) => {
+            const skip = action.pageIndex * action.pageSize;
+            const paginatedMessages = response.messages.slice(
+              skip,
+              action.pageSize * (action.pageIndex + 1)
+            );
+            console.log(action);
+            console.log(paginatedMessages);
+            console.log(response.messages);
+            return loadMessagesSuccess({
+              data: {
+                messages: paginatedMessages,
+                totalCount: response.totalCount,
+              },
+            });
+          }),
+          catchError((error) => of(loadMessagesFailure({ error })))
+        );
       })
     )
   );
@@ -39,11 +50,11 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(sendMessage),
       mergeMap((action: { message: IMessage; dialogId: string }) => {
-        return this.dataService.createMessage(action.message).pipe(
+        return this.messagesService.createMessage(action.message).pipe(
           map((docRef) => {
             //TODO: should I pass `dialogId` further along the props?
             this.matDialog.getDialogById(action.dialogId)?.close();
-            return sendMessageSuccess({ messageId: docRef.id });
+            return sendMessageSuccess();
           }),
           catchError((error) => of(sendMessageFailure({ error })))
         );
@@ -78,7 +89,7 @@ export class MessageEffects {
 
   constructor(
     private actions$: Actions,
-    private dataService: DataService,
+    private messagesService: MessagesService,
     private matDialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {}

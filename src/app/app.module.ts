@@ -19,7 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { appReducers } from './state/app.state';
 import { MessageEffects } from './state/messages/messages.effects';
-import { DataService } from './services/data.service';
+import { MessagesService } from './services/messages.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,7 +46,7 @@ import { DataService } from './services/data.service';
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     EffectsModule.forRoot([MessageEffects]),
   ],
-  providers: [DataService],
+  providers: [MessagesService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

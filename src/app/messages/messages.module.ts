@@ -16,7 +16,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MessageFormDialogComponent } from './message-form-dialog/message-form-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { DataService } from '../services/data.service';
+import { MessagesService } from '../services/messages.service';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { SkeletonTableComponent } from './skeleton-table/skeleton-table.component';
 
@@ -41,6 +41,6 @@ import { SkeletonTableComponent } from './skeleton-table/skeleton-table.componen
     MatPaginatorModule,
     MessagesRoutingModule,
   ],
-  providers: [DataService],
+  providers: [MessagesService],
 })
 export class MessagesModule {}

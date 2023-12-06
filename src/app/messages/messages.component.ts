@@ -9,12 +9,14 @@ import {
 } from '@angular/core';
 import {
   Observable,
+  Subject,
   Subscription,
   first,
   map,
   of,
   shareReplay,
   take,
+  takeUntil,
   tap,
 } from 'rxjs';
 
@@ -39,39 +41,28 @@ import { IMessage, IMessageTable } from '../interfaces/message.interface';
 export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns = ['name', 'message', 'createdAt'];
 
-  initialLoadInProgress = true;
-
   dataSource = new MatTableDataSource<IMessage>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   sendMessageLoading$: Observable<boolean> = this.store.select(
     selectSendMessageLoading
   );
-  messages$: Observable<IMessageTable> = this.store
-    .select(selectMessageData)
-    .pipe(
-      map((messageData) => messageData),
-      shareReplay()
-    );
+  messages$: Observable<IMessageTable> = this.store.select(selectMessageData);
 
   pageIndex: number = 0;
   pageSize: number = 10;
 
-  private messagesSubscription!: Subscription;
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(public dialog: MatDialog, private store: Store<IAppState>) {}
 
   ngOnInit(): void {
     this.loadMessageTable();
-    this.messagesSubscription = this.messages$.subscribe(
-      (data: IMessageTable) => {
+    this.messages$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: IMessageTable) => {
         this.dataSource.data = data.data;
-        this.dataSource.paginator = this.paginator;
-        if (this.initialLoadInProgress) {
-          this.initialLoadInProgress = false;
-        }
-      }
-    );
+      });
   }
 
   ngAfterViewInit(): void {
@@ -79,12 +70,13 @@ export class MessagesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.messagesSubscription.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   openFormDialog(): void {
-    const dialogRef = this.dialog.open(MessageFormDialogComponent, {
-      width: '400px', //TODO: make wider
+    this.dialog.open(MessageFormDialogComponent, {
+      width: '400px',
     });
   }
 
