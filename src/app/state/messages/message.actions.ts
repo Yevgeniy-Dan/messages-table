@@ -11,8 +11,7 @@ export const sendMessage = createAction(
 );
 
 export const sendMessageSuccess = createAction(
-  '[Message] Send Message Success',
-  props<{ messageId: string }>()
+  '[Message] Send Message Success'
 );
 
 export const sendMessageFailure = createAction(

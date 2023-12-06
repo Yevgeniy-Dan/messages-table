@@ -14,7 +14,7 @@ const messageReducer = createReducer(
   on(sendMessage, (state, { message }) => {
     return { ...state, loading: true };
   }),
-  on(sendMessageSuccess, (state, { messageId }) => {
+  on(sendMessageSuccess, (state) => {
     return {
       ...state,
       loading: false,
@@ -36,7 +36,6 @@ const messageReducer = createReducer(
     };
   }),
   on(loadMessagesSuccess, (state, { data }) => {
-    console.log(data);
     return {
       ...state,
       messageTable: {

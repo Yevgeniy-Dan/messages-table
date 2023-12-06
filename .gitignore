@@ -47,4 +47,10 @@ Thumbs.db
 .runtimeconfig.json
 
 
-src/environments/*
+src/env*
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
+!src/environments
+.vercel
