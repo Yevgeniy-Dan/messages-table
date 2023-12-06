@@ -26,7 +26,6 @@ export class MessageEffects {
         return this.dataService
           .getMessages(action.pageSize, action.pageIndex)
           .pipe(
-            take(2),
             map((response) => {
               return loadMessagesSuccess({ data: response });
             }),
