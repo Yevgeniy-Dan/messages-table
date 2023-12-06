@@ -36,7 +36,6 @@ const messageReducer = createReducer(
     };
   }),
   on(loadMessagesSuccess, (state, { data }) => {
-    console.log(data);
     return {
       ...state,
       messageTable: {
