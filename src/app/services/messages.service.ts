@@ -35,7 +35,7 @@ export class MessagesService {
   constructor(private firestore: Firestore, private store: Store<IAppState>) {}
 
   getMessages(): Observable<IMessageResponse> {
-    const messageCollection = collection(this.firestore, 'messages');
+    const messageCollection = this.messagesCollection;
 
     const query$ = collectionData(
       query(messageCollection, orderBy('createdAt', 'desc'))
@@ -52,7 +52,7 @@ export class MessagesService {
   createMessage(messageRecord: IMessage): Observable<DocumentData> {
     const { name, message, createdAt } = messageRecord;
     return from(
-      addDoc(collection(this.firestore, 'messages'), {
+      addDoc(this.messagesCollection, {
         name,
         message,
         createdAt,
