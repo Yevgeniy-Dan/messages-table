@@ -52,4 +52,5 @@ src/env*
 .flaskenv*
 !.env.project
 !.env.vault
+!src/environments
 .vercel
